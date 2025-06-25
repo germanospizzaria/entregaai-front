@@ -38,7 +38,6 @@ export const useDriverData = (deliveryDriverId: number) => {
         }`;
 
         const response = await apiClient.get<Run[]>(url);
-        console.log(response);
         setRuns(response);
       } catch (error) {
         console.error("Erro ao carregar corridas do entregador:", error);

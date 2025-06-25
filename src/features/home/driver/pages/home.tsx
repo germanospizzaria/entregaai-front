@@ -39,7 +39,6 @@ export const DriverDashboard: React.FC = () => {
     refetch,
   } = useDriverData(userId ?? 0); // ID do entregador
 
-  console.log(runs);
   useEffect(() => {
     const loadDriverData = async () => {
       try {

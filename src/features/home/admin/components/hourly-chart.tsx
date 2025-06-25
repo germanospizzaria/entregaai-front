@@ -55,7 +55,7 @@ export const HourlyChart: React.FC<HourlyChartProps> = ({
               <div className="relative">
                 <div className="w-full bg-neutral-200 rounded-full h-3">
                   <div
-                    className="bg-italian-green h-3 rounded-full transition-all duration-500"
+                    className="bg-neutral-200 h-3 rounded-full transition-all duration-500"
                     style={{
                       width: `${(stat.totalOrders / maxOrders) * 100}%`,
                     }}
@@ -64,7 +64,9 @@ export const HourlyChart: React.FC<HourlyChartProps> = ({
                 <div
                   className="absolute top-0 bg-green-600 h-3 rounded-full transition-all duration-500"
                   style={{
-                    width: `${(stat.completedDeliveries / maxOrders) * 100}%`,
+                    width: `${
+                      (stat.completedDeliveries / stat.totalOrders) * 100
+                    }%`,
                   }}
                 />
               </div>

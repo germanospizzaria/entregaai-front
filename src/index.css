@@ -829,11 +829,7 @@ button[class*="gradient"]:active {
     }
   }
 
-  .drivers-modal-responsive {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
+  /* Estilos responsivos para modal de entregadores */
   @media (max-width: 768px) {
     .drivers-modal-responsive .ant-modal {
       margin: 10px !important;

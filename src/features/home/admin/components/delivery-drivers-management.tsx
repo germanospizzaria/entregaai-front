@@ -363,8 +363,8 @@ export const DeliveryDriversManagement: React.FC<
         onCancel={() => setShowCreateModal(false)}
         footer={null}
         width={isMobile ? "90%" : isTablet ? 400 : 500}
-        style={isMobile ? { top: 20 } : undefined}
         className="drivers-modal-responsive"
+        centered
         destroyOnClose
       >
         <DeliveryDriverForm
