@@ -60,7 +60,7 @@ export const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({
       changeType: "positive" as const,
     },
     {
-      title: "Taxa de Sucesso",
+      title: "Entregue no prazo",
       value: `${statistics.efficiency.onTimeDeliveryRate}%`,
       icon: <TrophyOutlined className="text-orange-600 text-xl" />,
       bgColor: "bg-orange-100",

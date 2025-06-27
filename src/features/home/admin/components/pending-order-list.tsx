@@ -90,7 +90,7 @@ export const PendingOrdersList: React.FC<PendingOrdersListProps> = ({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="space-y-2 sm:space-y-3">
+        <div className="space-y-2 max-h-[400px] sm:max-h-[600px]">
           {pendingOrders.length === 0 ? (
             <div className="text-center py-8 sm:py-12">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
