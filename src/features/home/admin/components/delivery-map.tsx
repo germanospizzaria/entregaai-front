@@ -45,112 +45,121 @@ const pizzariaIcon = new L.DivIcon({
   iconAnchor: [20, 20],
 });
 
-// Ícone para pedidos pendentes (aguardando rota)
-const pendingOrderIcon = new L.DivIcon({
-  html: `
+// Função para criar ícone de pedido pendente com número
+const createPendingOrderIcon = (orderNumber: string) =>
+  new L.DivIcon({
+    html: `
     <div style="
       background: rgb(220, 38, 38);
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       box-shadow: 0 3px 8px rgba(220, 38, 38, 0.3);
       border: 2px solid white;
       color: white;
       font-weight: bold;
-      font-size: 12px;
       animation: pulse 2s infinite;
       cursor: pointer;
+      position: relative;
     ">
-      📦
+      <div style="font-size: 10px; line-height: 1;">📦</div>
+      <div style="font-size: 14px; line-height: 1; margin-top: 1px;">#${orderNumber}</div>
     </div>
   `,
-  className: "custom-pending-order-icon",
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
-});
+    className: "custom-pending-order-icon",
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
 
-// Ícone para pedidos em rota
-const inRouteOrderIcon = new L.DivIcon({
-  html: `
+// Função para criar ícone de pedido em rota com número
+const createInRouteOrderIcon = (orderNumber: string) =>
+  new L.DivIcon({
+    html: `
     <div style="
       background: rgb(59, 130, 246);
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       box-shadow: 0 3px 8px rgba(59, 130, 246, 0.3);
       border: 2px solid white;
       color: white;
       font-weight: bold;
-      font-size: 12px;
       cursor: not-allowed;
       opacity: 0.8;
     ">
-      🚚
+      <div style="font-size: 10px; line-height: 1;">🚚</div>
+      <div style="font-size: 14px; line-height: 1; margin-top: 1px;">#${orderNumber}</div>
     </div>
   `,
-  className: "custom-inroute-order-icon",
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
-});
+    className: "custom-inroute-order-icon",
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
 
-// Ícone para pedidos concluídos
-const completedOrderIcon = new L.DivIcon({
-  html: `
+// Função para criar ícone de pedido concluído com número
+const createCompletedOrderIcon = (orderNumber: string) =>
+  new L.DivIcon({
+    html: `
     <div style="
       background: rgb(34, 197, 94);
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       box-shadow: 0 3px 8px rgba(34, 197, 94, 0.3);
       border: 2px solid white;
       color: white;
       font-weight: bold;
-      font-size: 12px;
       cursor: not-allowed;
       opacity: 0.7;
     ">
-      ✅
+      <div style="font-size: 10px; line-height: 1;">✅</div>
+      <div style="font-size: 14px; line-height: 1; margin-top: 1px;">#${orderNumber}</div>
     </div>
   `,
-  className: "custom-completed-order-icon",
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
-});
+    className: "custom-completed-order-icon",
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
 
-// Ícone para pedidos selecionados (verde maior)
-const selectedOrderIcon = new L.DivIcon({
-  html: `
+// Função para criar ícone de pedido selecionado com número
+const createSelectedOrderIcon = (orderNumber: string) =>
+  new L.DivIcon({
+    html: `
     <div style="
       background: rgb(34, 139, 34);
-      width: 36px;
-      height: 36px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 12px rgba(34, 139, 34, 0.4);
       border: 3px solid white;
       color: white;
       font-weight: bold;
-      font-size: 14px;
       animation: bounce 1s infinite;
     ">
-      ✓
+      <div style="font-size: 11px; line-height: 1;">✓</div>
+      <div style="font-size: 14px; line-height: 1; margin-top: 1px;">#${orderNumber}</div>
     </div>
   `,
-  className: "custom-selected-order-icon",
-  iconSize: [36, 36],
-  iconAnchor: [18, 18],
-});
+    className: "custom-selected-order-icon",
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+  });
 
 interface DeliveryMapProps {
   pizzariaLocation: {
@@ -173,6 +182,29 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
     pizzariaLocation.lat,
     pizzariaLocation.lng,
   ]);
+
+  // Mapeamento de status para ícones
+  const getOrderIcon = (order: Order, isSelected: boolean) => {
+    const canBeSelected = order.statusGeral === StatusPedido.AGUARDANDO_ROTA;
+
+    // Extrair o número do pedido do CRM (pegar os últimos 4 dígitos para melhor visualização)
+    const orderNumber = order.crmPedidoId.slice(-4);
+
+    if (isSelected && canBeSelected) {
+      return createSelectedOrderIcon(orderNumber);
+    }
+
+    switch (order.statusGeral) {
+      case StatusPedido.AGUARDANDO_ROTA:
+        return createPendingOrderIcon(orderNumber);
+      case StatusPedido.EM_ROTA:
+        return createInRouteOrderIcon(orderNumber);
+      case StatusPedido.CONCLUIDO:
+        return createCompletedOrderIcon(orderNumber);
+      default:
+        return createPendingOrderIcon(orderNumber);
+    }
+  };
 
   useEffect(() => {
     if (orders.length > 0) {
@@ -236,10 +268,10 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
         </div>
 
         {ordersWithCoordinates.length > 0 && (
-          <div className="flex items-center gap-2 text-sm text-neutral-600">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-neutral-600">
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-italian-red rounded-full animate-pulse" />
-              <span>
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-italian-red rounded-full animate-pulse" />
+              <span className="text-xs sm:text-sm">
                 {
                   ordersWithCoordinates.filter(
                     (o) => o.statusGeral === StatusPedido.AGUARDANDO_ROTA
@@ -252,8 +284,8 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
               (o) => o.statusGeral === StatusPedido.EM_ROTA
             ).length > 0 && (
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded-full" />
-                <span>
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-blue-500 rounded-full" />
+                <span className="text-xs sm:text-sm">
                   {
                     ordersWithCoordinates.filter(
                       (o) => o.statusGeral === StatusPedido.EM_ROTA
@@ -267,8 +299,8 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
               (o) => o.statusGeral === StatusPedido.CONCLUIDO
             ).length > 0 && (
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-500 rounded-full" />
-                <span>
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full" />
+                <span className="text-xs sm:text-sm">
                   {
                     ordersWithCoordinates.filter(
                       (o) => o.statusGeral === StatusPedido.CONCLUIDO
@@ -325,24 +357,11 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
             const canBeSelected =
               order.statusGeral === StatusPedido.AGUARDANDO_ROTA;
 
-            let icon;
-            if (isSelected && canBeSelected) {
-              icon = selectedOrderIcon;
-            } else if (order.statusGeral === StatusPedido.AGUARDANDO_ROTA) {
-              icon = pendingOrderIcon;
-            } else if (order.statusGeral === StatusPedido.EM_ROTA) {
-              icon = inRouteOrderIcon;
-            } else if (order.statusGeral === StatusPedido.CONCLUIDO) {
-              icon = completedOrderIcon;
-            } else {
-              icon = pendingOrderIcon; // fallback
-            }
-
             return (
               <Marker
                 key={order.id}
                 position={[order.latitude!, order.longitude!]}
-                icon={icon}
+                icon={getOrderIcon(order, isSelected)}
                 eventHandlers={{
                   click: () => handleOrderClick(order),
                 }}
@@ -491,7 +510,7 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
       </div>
 
       {ordersWithCoordinates.length > 0 && (
-        <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-medium border border-neutral-200 text-xs z-10">
+        <div className="hidden sm:block absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-medium border border-neutral-200 text-xs z-10">
           <div className="font-medium text-neutral-700 mb-2">Legenda</div>
           <div className="space-y-1">
             <div className="flex items-center gap-2">

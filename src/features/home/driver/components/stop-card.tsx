@@ -5,6 +5,7 @@ import {
   ClockCircleOutlined,
   CheckCircleOutlined,
   PhoneOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 export const StopCard: React.FC<{
@@ -63,6 +64,11 @@ export const StopCard: React.FC<{
           </div>
 
           <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm text-neutral-600">
+              <UserOutlined className="text-xs" />
+              <span className="font-medium">{stop.pedido.nomeCliente}</span>
+            </div>
+
             <div className="flex items-center gap-2 text-sm text-neutral-600">
               <EnvironmentOutlined className="text-xs" />
               <span className="truncate">{stop.pedido.enderecoCompleto}</span>

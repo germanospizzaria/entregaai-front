@@ -1,5 +1,12 @@
 import { message } from "antd";
 
+// Callback para logout quando token expira
+let onTokenExpiredCallback: (() => void) | null = null;
+
+export const setTokenExpiredCallback = (callback: () => void) => {
+  onTokenExpiredCallback = callback;
+};
+
 export class ApiError extends Error {
   public statusCode: number;
   public data?: Record<string, unknown> | string | null;
@@ -65,6 +72,12 @@ export class ApiClient {
     }
 
     if (!response.ok) {
+      // Se a resposta for 401 (Unauthorized), provavelmente o token expirou
+      if (response.status === 401 && onTokenExpiredCallback) {
+        console.warn("Token expired, logging out user");
+        onTokenExpiredCallback();
+      }
+
       const errorMessage =
         typeof data === "object" && data !== null && "message" in data
           ? ((data as Record<string, unknown>).message as string)

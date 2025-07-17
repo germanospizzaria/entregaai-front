@@ -8,6 +8,7 @@ import {
   HeatMapOutlined,
   DownOutlined,
   UpOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { StatusCorrida, type Run } from "../types/run";
 import { StatusParada, type Stop } from "../types/stop";
@@ -265,6 +266,13 @@ const StopCard: React.FC<{
           </div>
 
           <div className="space-y-2">
+            <div className="flex items-start gap-2 text-xs sm:text-sm text-neutral-600">
+              <UserOutlined className="text-xs flex-shrink-0 mt-0.5" />
+              <span className="font-medium break-words leading-relaxed">
+                {stop.pedido.nomeCliente}
+              </span>
+            </div>
+
             <div className="flex items-start gap-2 text-xs sm:text-sm text-neutral-600">
               <EnvironmentOutlined className="text-xs flex-shrink-0 mt-0.5" />
               <span className="break-words leading-relaxed">

@@ -12,6 +12,8 @@ import type {
   DriverLoginCredentials,
 } from "../types/auth";
 import { authApi } from "../services/auth.service";
+import { setTokenExpiredCallback } from "../../../shared/services/api.service";
+import { isTokenExpired } from "../../../shared/utils/token";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, {
@@ -25,14 +27,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const storedToken = localStorage.getItem("accessToken");
 
       if (storedToken) {
-        dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: {
-            accessToken: storedToken,
-            role: (localStorage.getItem("userRole") as string) || "",
-            userId: parseInt(localStorage.getItem("userId") || "0"),
-          },
-        });
+        // Verificar se o token está expirado
+        if (isTokenExpired(storedToken)) {
+          // Token expirado, limpar dados e não autenticar
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("userRole");
+          localStorage.removeItem("userId");
+          dispatch({ type: "LOADING_COMPLETE" });
+        } else {
+          // Token válido, autenticar usuário
+          dispatch({
+            type: "LOGIN_SUCCESS",
+            payload: {
+              accessToken: storedToken,
+              role: (localStorage.getItem("userRole") as string) || "",
+              userId: parseInt(localStorage.getItem("userId") || "0"),
+            },
+          });
+        }
       } else {
         dispatch({ type: "LOADING_COMPLETE" });
       }
@@ -83,13 +95,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     messageApi.success("Logout realizado com sucesso!");
   }, [messageApi]);
 
+  const handleTokenExpired = useCallback(() => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userId");
+
+    dispatch({ type: "TOKEN_EXPIRED" });
+    messageApi.warning("Sua sessão expirou. Faça login novamente.");
+  }, [messageApi]);
+
+  // Configurar o callback para tokens expirados
+  useEffect(() => {
+    setTokenExpiredCallback(handleTokenExpired);
+  }, [handleTokenExpired]);
+
   const value = useMemo(
     () => ({
       ...state,
       login,
       logout,
+      handleTokenExpired,
     }),
-    [login, logout, state]
+    [login, logout, handleTokenExpired, state]
   );
 
   return (

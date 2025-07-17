@@ -25,6 +25,7 @@ type AuthAction =
     }
   | { type: "LOGIN_FAILURE" }
   | { type: "LOGOUT" }
+  | { type: "TOKEN_EXPIRED" }
   | { type: "LOADING_COMPLETE" };
 
 export const authReducer = (
@@ -60,6 +61,11 @@ export const authReducer = (
         ...initialState,
         isLoading: false,
       };
+    case "TOKEN_EXPIRED":
+      return {
+        ...initialState,
+        isLoading: false,
+      };
     case "LOADING_COMPLETE":
       return {
         ...state,
@@ -76,12 +82,14 @@ interface AuthContextType extends AuthState {
     credentials: AdminLoginCredentials | DriverLoginCredentials
   ) => Promise<void>;
   logout: () => void;
+  handleTokenExpired: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   ...initialState,
   login: async () => {},
   logout: () => {},
+  handleTokenExpired: () => {},
 });
 
 export { initialState };
