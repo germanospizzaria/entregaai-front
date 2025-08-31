@@ -187,8 +187,8 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
   const getOrderIcon = (order: Order, isSelected: boolean) => {
     const canBeSelected = order.statusGeral === StatusPedido.AGUARDANDO_ROTA;
 
-    // Extrair o número do pedido do CRM (pegar os últimos 4 dígitos para melhor visualização)
-    const orderNumber = order.crmPedidoId.slice(-4);
+    // Usar o shortReference completo (armazenado em crmPedidoId) no marcador
+    const orderNumber = String(order.crmPedidoId);
 
     if (isSelected && canBeSelected) {
       return createSelectedOrderIcon(orderNumber);
@@ -403,7 +403,7 @@ export const DeliveryMap: React.FC<DeliveryMapProps> = ({
                         </div>
                         <div>
                           <div className="font-semibold text-neutral-800 text-sm truncate">
-                            Pedido #{order.crmPedidoId.slice(0, 6)}...
+                            Pedido #{order.crmPedidoId}
                           </div>
                           <div className="text-xs text-neutral-500 truncate">
                             ID: {order.id}

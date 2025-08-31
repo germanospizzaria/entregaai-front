@@ -174,7 +174,7 @@ export const RunCreatedModal: React.FC<RunCreatedModalProps> = ({
                       <div className="flex flex-col gap-2 mb-3">
                         <div className="flex items-center justify-between">
                           <p className="font-semibold text-neutral-800 text-base">
-                            Pedido #{stop.pedido.crmPedidoId.slice(0, 6)}...
+                            Pedido #{stop.pedido.crmPedidoId}
                           </p>
                           <span className="text-xs font-bold text-italian-red bg-italian-red/10 px-2 py-1 rounded-full flex-shrink-0">
                             PARADA {stop.ordem}

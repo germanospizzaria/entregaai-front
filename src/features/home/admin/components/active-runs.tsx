@@ -228,8 +228,7 @@ export const ActiveRuns: React.FC<ActiveRunsProps> = ({ runs, loading }) => {
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between mb-1">
                                     <h5 className="font-medium text-neutral-800 text-sm">
-                                      Pedido #
-                                      {stop.pedido.crmPedidoId.slice(0, 6)}...
+                                      Pedido #{stop.pedido.crmPedidoId}
                                     </h5>
                                     <span
                                       className={`text-xs font-medium px-2 py-1 rounded ${
